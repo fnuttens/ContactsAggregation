@@ -7,15 +7,23 @@
     <ImageView
         android:id="@+id/providerImage"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:baselineAlignBottom="false"
-        android:gravity="center_vertical"
-        android:src="@drawable/google" />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/providerName"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:text="Medium Text"
+        android:layout_marginLeft="20dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/account"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:gravity="center_vertical"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />

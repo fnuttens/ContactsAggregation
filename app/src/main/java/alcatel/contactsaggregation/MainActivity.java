@@ -38,11 +38,12 @@ public class MainActivity extends ActionBarActivity {
 
         ContactListItem contactList_data[] = new ContactListItem[]
                 {
-                        new ContactListItem(R.drawable.contacts, "Antoine Bouchina"), // id1
-                        new ContactListItem(R.drawable.contacts, "Loic Leuilliot"), // id2
+                        new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"), // id1
+                        new ContactListItem(R.drawable.loicleuilliot, "Loic Leuilliot"), // id2
                         new ContactListItem(R.drawable.contacts, "Florent Nuttens"), // id3
                         new ContactListItem(R.drawable.contacts, "Adrien Weideman"), // id4
-                        new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber") // id5
+                        new ContactListItem(R.drawable.julienmey, "Julien Mey"), // id5
+                        new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber") // id6
                 };
 
         listContacts = (ListView) findViewById(R.id.listContacts);
@@ -70,11 +71,13 @@ public class MainActivity extends ActionBarActivity {
                         args.putString("contactID", "cont3");
                         break;
                     case 3:
-                        //args.putString("Provider", "Exchange");
                         args.putString("contactID", "cont4");
                         break;
+                    case 4:
+                        args.putString("contactID", "cont5");
+                        break;
                     default:
-                        args.putString("Provider", "Autre");
+                        args.putString("contactID", "unknown");
                 }
                 try {
                     load_fragment(FragContactsDetails.class.newInstance(), args);
