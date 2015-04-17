@@ -18,7 +18,6 @@ import alcatel.contactsaggregation.Fragments.FragContactsDetails;
 import alcatel.contactsaggregation.Providers.Google.GoogleProvider;
 import alcatel.contactsaggregation.Providers.Provider;
 
-
 public class MainActivity extends ActionBarActivity {
 
     private ListView listContacts;
@@ -29,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         Provider googleTester = GoogleProvider.getInstance();
-        ArrayList<Contact> contacts = googleTester.getContact();
+        ArrayList<Contact> contacts = googleTester.getContacts();
 
         if (contacts != null) {
             for (Contact c : contacts)
