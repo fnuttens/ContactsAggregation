@@ -77,4 +77,19 @@ public class FacebookProvider extends Provider {
     public String getCurrentVersion() {
         return null;
     }
+
+    @Override
+    public String getAuthUri() {
+        return null;
+    }
+
+    @Override
+    public String getToken() {
+        return null;
+    }
+
+    @Override
+    public Long getTimeout() {
+        return null;
+    }
 }

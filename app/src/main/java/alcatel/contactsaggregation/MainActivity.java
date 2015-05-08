@@ -1,5 +1,6 @@
 package alcatel.contactsaggregation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +29,18 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // TODO : refactor <<
+        long currentTimeStamp = System.currentTimeMillis()/1000;    // get the current system timestamp
+
+        // Check if the stored token is outdated and renew it if needed
+        if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
+            Intent oauthLoginView = new Intent(this, OAuthLoginView.class);
+            // Load the OAuthLoginView with the oauth provider uri
+            oauthLoginView.putExtra("setOAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
+            startActivity(oauthLoginView);
+        }
+        // >>
+
         Provider googleTester = GoogleProvider.getInstance();
         ArrayList<Contact> contacts = googleTester.getContact();
 
@@ -37,19 +50,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         ContactListItem contactList_data[] = new ContactListItem[]
-                {
-                        new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"), // id1
-                        new ContactListItem(R.drawable.loicleuilliot, "Loic Leuilliot"), // id2
-                        new ContactListItem(R.drawable.florentnuttens, "Florent Nuttens"), // id3
-                        new ContactListItem(R.drawable.mathieutavernier, "Mathieu Tavernier"), // id4
-                        new ContactListItem(R.drawable.julienmey, "Julien Mey"), // id5
-                        new ContactListItem(R.drawable.adrienweidemann, "Adrien Weidemann"), // id6
-                        new ContactListItem(R.drawable.contacts, "Anthony Martin"), // id7
-                        new ContactListItem(R.drawable.dylancrespo, "Dylan Crespo"), // id8
-                        new ContactListItem(R.drawable.louislaselva, "Louis La Selva"), // id9
-                        new ContactListItem(R.drawable.nghiahuynh, "Nghia Huynh"), // id10
-                        new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber") // id11
-                };
+        {
+            new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"), // id1
+            new ContactListItem(R.drawable.loicleuilliot, "Loic Leuilliot"), // id2
+            new ContactListItem(R.drawable.florentnuttens, "Florent Nuttens"), // id3
+            new ContactListItem(R.drawable.mathieutavernier, "Mathieu Tavernier"), // id4
+            new ContactListItem(R.drawable.julienmey, "Julien Mey"), // id5
+            new ContactListItem(R.drawable.adrienweidemann, "Adrien Weidemann"), // id6
+            new ContactListItem(R.drawable.contacts, "Anthony Martin"), // id7
+            new ContactListItem(R.drawable.dylancrespo, "Dylan Crespo"), // id8
+            new ContactListItem(R.drawable.louislaselva, "Louis La Selva"), // id9
+            new ContactListItem(R.drawable.nghiahuynh, "Nghia Huynh"), // id10
+            new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber") // id11
+        };
 
         listContacts = (ListView) findViewById(R.id.listContacts);
 

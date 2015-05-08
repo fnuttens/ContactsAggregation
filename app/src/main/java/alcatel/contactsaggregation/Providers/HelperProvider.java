@@ -5,6 +5,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.HashMap;
+
 /**
  * Created by elfaus on 03/04/2015.
  */
@@ -25,7 +29,7 @@ public class HelperProvider {
 
                 // if it's not an array, we follow the path
                 if (tmpObject != null) {
-                    String newPathname = pathname.substring(pathname.indexOf(".") + 1, pathname.length());
+                    String newPathname = pathname.substring(pathname.indexOf(".")+1, pathname.length());
                     return HelperProvider.getJSONObjectByPath(tmpObject, newPathname);
                 }
 
@@ -61,6 +65,38 @@ public class HelperProvider {
         }
 
         return null;
+    }
+
+    /**
+     * Extract parameters from an uri using parameter name as name
+     * @param uri An uri from which extract parameters
+     * @return The parameters list
+     */
+    public static HashMap<String, String> getParameters(String uri) {
+        // split each parameter in a string array
+        String parameterString[] = uri.split("&");
+        HashMap<String, String> params = new HashMap<String, String>();
+
+        // store parameter in parameters map
+        // first string if the parameter name, second is the parameter value
+        for (String p : parameterString) {
+            String paramPair[] = p.split("=");
+            params.put(paramPair[0], paramPair[1]);
+        }
+
+        return params;
+    }
+
+    /**
+     * Build a random string of 32 chars
+     * @param size The chars amount
+     * @return A random string of 32 chars
+     */
+    public static String initToken(int size)
+    {
+        // Create a state token to prevent request forgery.
+        // Store it in the session for later validation.
+        return new BigInteger(130, new SecureRandom()).toString(size);
     }
 
 }
