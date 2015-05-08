@@ -84,6 +84,11 @@ public class AlcatelProvider extends Provider {
     }
 
     @Override
+    public void authCallback(String uri) {
+
+    }
+
+    @Override
     public String getToken() {
         return null;
     }

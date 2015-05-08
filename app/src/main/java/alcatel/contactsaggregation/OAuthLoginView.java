@@ -8,6 +8,10 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import alcatel.contactsaggregation.Providers.Provider;
+
 public class OAuthLoginView extends ActionBarActivity {
 
     @Override
@@ -18,15 +22,42 @@ public class OAuthLoginView extends ActionBarActivity {
         // Get the webView
         WebView oAuthLoginWebView = (WebView) findViewById(R.id.activity_oauth_login);
 
-        // Get the Provider OAuth endpoint uri
-        String oAuthEndpoint = getIntent().getStringExtra("setOAuthEndpoint");
+        // Get the Provider OAuth endpoint uri and its instance
+        final String oAuthEndpoint = getIntent().getStringExtra("OAuthEndpoint");
+        final String provider = getIntent().getStringExtra("Provider");
 
         // Enable JS for google auth page
         oAuthLoginWebView.getSettings().setJavaScriptEnabled(true);
         // Override redirection comportment
         oAuthLoginWebView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d("[OAUTH-LOGIN]", url);  // TODO: implement
+                if (!url.equals(oAuthEndpoint)) {
+                    Log.d("[OAUTH-LOGIN]", url);  // TODO: implement
+                    Log.d("[OAUTH-LOGIN]", provider);
+
+                    try {
+                        // Get provider instance by reflection
+                        Class cls = Class.forName(provider);
+                        Method met = cls.getMethod("getInstance", new Class[0]);
+                        Object o = met.invoke(null, new Object[0]);
+
+                        // Set the new token
+                        Provider providerInstance = (Provider) o;
+                        ((Provider) o).authCallback(url);
+
+                    } catch (ClassNotFoundException e) {
+                        Log.e("[OAUTH-LOGIN]", e.getMessage());
+                    } catch (IllegalAccessException e) {
+                        Log.e("[OAUTH-LOGIN]", e.getMessage());
+                    } catch (NoSuchMethodException e) {
+                        Log.e("[OAUTH-LOGIN]", e.getMessage());
+                    } catch (InvocationTargetException e) {
+                        Log.e("[OAUTH-LOGIN]", e.getMessage());
+                    }
+                }
+
+                finish();
+
                 return false;
             }
         });

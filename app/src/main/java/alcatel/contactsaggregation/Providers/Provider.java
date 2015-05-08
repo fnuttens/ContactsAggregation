@@ -50,6 +50,7 @@ public abstract class Provider {
      */
     public abstract String getAuthUri();
 
+    public abstract void authCallback(String uri);
     public abstract String getToken();
     public abstract Long getTimeout();
 

@@ -34,9 +34,14 @@ public class MainActivity extends ActionBarActivity {
 
         // Check if the stored token is outdated and renew it if needed
         if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
+
             Intent oauthLoginView = new Intent(this, OAuthLoginView.class);
+
             // Load the OAuthLoginView with the oauth provider uri
-            oauthLoginView.putExtra("setOAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
+            oauthLoginView.putExtra("OAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
+            oauthLoginView.putExtra("Provider", GoogleProvider.class.getName());
+
+            // Start the authentication activity
             startActivity(oauthLoginView);
         }
         // >>

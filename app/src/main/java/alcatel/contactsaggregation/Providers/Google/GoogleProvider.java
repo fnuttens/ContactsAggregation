@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import alcatel.contactsaggregation.Contact;
@@ -134,6 +135,15 @@ public class GoogleProvider extends Provider {
     public Long getTimeout()
     {
         return this._timeout;
+    }
+
+    @Override
+    public void authCallback(String uri) {
+        final long currentTimeStamp = System.currentTimeMillis()/1000;
+        final HashMap<String, String> params = HelperProvider.getParameters(uri);
+
+        this._accessToken = params.get("access_token");
+        this._timeout = Long.parseLong(params.get("expires_in")) + currentTimeStamp;
     }
 
 }
