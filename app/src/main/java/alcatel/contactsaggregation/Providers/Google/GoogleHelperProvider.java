@@ -34,7 +34,8 @@ class GoogleHelperProvider {
         return instance;
     }
 
-    // TODO : debug OAuth
+
+
     /**
      * Prepare the uri to use in the auth endpoint
      * @param loginHint A google user account (gmail address)
@@ -56,6 +57,17 @@ class GoogleHelperProvider {
         return formattedUri;
     }
 
+    protected String getAllContactURI(String loginHint) {
+        String alt = "json";
+        String uri = "https://www.google.com/m8/feeds/contacts/%s/full?alt=%s";
+
+        String formattedUri = String.format(uri, loginHint, alt);
+
+        Log.d("[Google]", formattedUri);
+
+        return formattedUri;
+    }
+
     /**
      * Enable to get a new token access for a specific user
      * If the old token is still up to date, do nothing
@@ -69,8 +81,8 @@ class GoogleHelperProvider {
         // update the token only if its outdated
         if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
 
-
-
+            // call asyncTask class in order to post the uri to get a new token
+            // TODO : implement
         }
     }
 

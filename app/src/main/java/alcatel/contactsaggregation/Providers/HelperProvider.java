@@ -15,8 +15,6 @@ import java.util.HashMap;
 public class HelperProvider {
 
     public static Object getJSONObjectByPath(JSONObject jsonObject, String pathname) {
-        Log.d("HelperProvider", "Current pathname is " + pathname);
-
         String[] pathElement = pathname.trim().split("\\.");
 
         // check if there is any element in the tree

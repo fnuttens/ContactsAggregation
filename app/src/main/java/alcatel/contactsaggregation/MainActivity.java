@@ -29,31 +29,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // TODO : refactor <<
-        long currentTimeStamp = System.currentTimeMillis()/1000;    // get the current system timestamp
-
-        // Check if the stored token is outdated and renew it if needed
-        if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
-
-            Intent oauthLoginView = new Intent(this, OAuthLoginView.class);
-
-            // Load the OAuthLoginView with the oauth provider uri
-            oauthLoginView.putExtra("OAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
-            oauthLoginView.putExtra("Provider", GoogleProvider.class.getName());
-
-            // Start the authentication activity
-            startActivity(oauthLoginView);
-        }
-        // >>
-
-        Provider googleTester = GoogleProvider.getInstance();
-        ArrayList<Contact> contacts = googleTester.getContact();
-
-        if (contacts != null) {
-            for (Contact c : contacts)
-                Log.d("[CONTACT]", c.toString());
-        }
-
         ContactListItem contactList_data[] = new ContactListItem[]
         {
             new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"), // id1
@@ -127,6 +102,40 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // TODO : refactor - add new account - authorize access <<
+        long currentTimeStamp = System.currentTimeMillis()/1000;    // get the current system timestamp
+
+        // Check if the stored token is outdated and renew it if needed
+        if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
+
+            Intent oauthLoginView = new Intent(this, OAuthLoginView.class);
+
+            // Load the OAuthLoginView with the oauth provider uri
+            oauthLoginView.putExtra("OAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
+            oauthLoginView.putExtra("Provider", GoogleProvider.class.getName());
+
+            // Start the authentication activity
+            startActivity(oauthLoginView);
+        }
+        // >>
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ArrayList<Contact> contacts = GoogleProvider.getInstance().getContact();
+
+        if (contacts != null) {
+            for (Contact c : contacts)
+                Log.d("[CONTACT]", c.toString());
+        }
     }
 
     private void load_fragment(Fragment fragment, Bundle bundle) {
