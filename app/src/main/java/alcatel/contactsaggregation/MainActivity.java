@@ -18,7 +18,6 @@ import java.util.List;
 
 import alcatel.contactsaggregation.Fragments.FragContactsDetails;
 import alcatel.contactsaggregation.Providers.Google.GoogleProvider;
-import alcatel.contactsaggregation.Providers.Provider;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -44,8 +43,6 @@ public class MainActivity extends ActionBarActivity {
         this.contactList.add(new ContactListItem(R.drawable.louislaselva, "Louis La Selva"));
         this.contactList.add(new ContactListItem(R.drawable.nghiahuynh, "Nghia Huynh"));
         this.contactList.add(new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber"));
-        Provider googleTester = GoogleProvider.getInstance();
-        ArrayList<Contact> contacts = googleTester.getContacts();
 
         ContactListItem[] contactListData = new ContactListItem[this.contactList.size()];
 
@@ -111,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
         super.onStart();
 
         // TODO : refactor - add new account - authorize access <<
-        long currentTimeStamp = System.currentTimeMillis()/1000;    // get the current system timestamp
+        long currentTimeStamp = System.currentTimeMillis() / 1000;    // get the current system timestamp
 
         // Check if the stored token is outdated and renew it if needed
         if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
