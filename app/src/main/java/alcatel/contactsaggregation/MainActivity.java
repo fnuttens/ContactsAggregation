@@ -1,5 +1,6 @@
 package alcatel.contactsaggregation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import alcatel.contactsaggregation.Fragments.FragContactsDetails;
 import alcatel.contactsaggregation.Providers.Google.GoogleProvider;
@@ -20,46 +22,40 @@ import alcatel.contactsaggregation.Providers.Provider;
 
 public class MainActivity extends ActionBarActivity {
 
-    private ListView listContacts;
+    private ListView contactListView;
+    private ContactListItemAdapter contactAdapter;
+    private List<ContactListItem> contactList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 2015.05 - elfaus - Updatable contact list
+        this.contactList = new ArrayList<ContactListItem>();
+        this.contactList.add(new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"));
+        this.contactList.add(new ContactListItem(R.drawable.loicleuilliot, "Loic Leuilliot"));
+        this.contactList.add(new ContactListItem(R.drawable.florentnuttens, "Florent Nuttens"));
+        this.contactList.add(new ContactListItem(R.drawable.mathieutavernier, "Mathieu Tavernier"));
+        this.contactList.add(new ContactListItem(R.drawable.julienmey, "Julien Mey"));
+        this.contactList.add(new ContactListItem(R.drawable.adrienweidemann, "Adrien Weidemann"));
+        this.contactList.add(new ContactListItem(R.drawable.contacts, "Anthony Martin"));
+        this.contactList.add(new ContactListItem(R.drawable.dylancrespo, "Dylan Crespo"));
+        this.contactList.add(new ContactListItem(R.drawable.louislaselva, "Louis La Selva"));
+        this.contactList.add(new ContactListItem(R.drawable.nghiahuynh, "Nghia Huynh"));
+        this.contactList.add(new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber"));
         Provider googleTester = GoogleProvider.getInstance();
         ArrayList<Contact> contacts = googleTester.getContacts();
 
-        if (contacts != null) {
-            for (Contact c : contacts)
-                Log.d("[CONTACT]", c.toString());
-        }
+        ContactListItem[] contactListData = new ContactListItem[this.contactList.size()];
 
-        ContactListItem contactList_data[] = new ContactListItem[]
-                {
-                        new ContactListItem(R.drawable.antoinebouchina, "Antoine Bouchina"), // id1
-                        new ContactListItem(R.drawable.loicleuilliot, "Loic Leuilliot"), // id2
-                        new ContactListItem(R.drawable.florentnuttens, "Florent Nuttens"), // id3
-                        new ContactListItem(R.drawable.mathieutavernier, "Mathieu Tavernier"), // id4
-                        new ContactListItem(R.drawable.julienmey, "Julien Mey"), // id5
-                        new ContactListItem(R.drawable.adrienweidemann, "Adrien Weidemann"), // id6
-                        new ContactListItem(R.drawable.contacts, "Anthony Martin"), // id7
-                        new ContactListItem(R.drawable.dylancrespo, "Dylan Crespo"), // id8
-                        new ContactListItem(R.drawable.louislaselva, "Louis La Selva"), // id9
-                        new ContactListItem(R.drawable.nghiahuynh, "Nghia Huynh"), // id10
-                        new ContactListItem(R.drawable.contacts, "Thibaut Weissgerber") // id11
-                };
+        this.contactListView = (ListView) findViewById(R.id.listContacts);
 
-        listContacts = (ListView) findViewById(R.id.listContacts);
+        this.contactAdapter = new ContactListItemAdapter(this, R.layout.list_item, this.contactList.toArray(contactListData));
 
-        ContactListItemAdapter adapter = new ContactListItemAdapter(this, R.layout.list_item, contactList_data);
+        this.contactListView.setAdapter(this.contactAdapter);
 
-        //View header = (View)getLayoutInflater().inflate(R.layout.abc_action_bar_title_item, null);
-        //listContacts.addHeaderView(header);
-
-        listContacts.setAdapter(adapter);
-
-        listContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // utiliser les informations contenues dans view (getChild, ...)
@@ -108,6 +104,44 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // TODO : refactor - add new account - authorize access <<
+        long currentTimeStamp = System.currentTimeMillis()/1000;    // get the current system timestamp
+
+        // Check if the stored token is outdated and renew it if needed
+        if (currentTimeStamp >= GoogleProvider.getInstance().getTimeout()) {
+
+            Intent oauthLoginView = new Intent(this, OAuthLoginView.class);
+
+            // Load the OAuthLoginView with the oauth provider uri
+            oauthLoginView.putExtra("OAuthEndpoint", GoogleProvider.getInstance().getAuthUri());
+            oauthLoginView.putExtra("Provider", GoogleProvider.class.getName());
+
+            // Start the authentication activity
+            startActivity(oauthLoginView);
+        }
+        // >>
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ArrayList<Contact> contacts = GoogleProvider.getInstance().getContact();
+
+        if (contacts != null) {
+            for (Contact c : contacts)
+                Log.d("[CONTACT]", c.toString());
+        }
+
+        ContactListItem c[] = new ContactListItem[contacts.size()];
+        this.contactAdapter.addAll(contacts.toArray(c));
+        this.contactAdapter.notifyDataSetChanged();
     }
 
     private void load_fragment(Fragment fragment, Bundle bundle) {

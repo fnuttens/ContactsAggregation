@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Florent on 02/04/2015.
+ * Created by Antoine BOUCHINA on 02/04/2015.
  */
 public class ContactListItemAdapter extends ArrayAdapter<ContactListItem> {
 

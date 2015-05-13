@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by elfaus on 06/03/2015.
+ * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public class Contact {
 

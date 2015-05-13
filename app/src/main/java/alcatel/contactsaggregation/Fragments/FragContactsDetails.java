@@ -15,7 +15,7 @@ import java.util.HashMap;
 import alcatel.contactsaggregation.R;
 
 /**
- * Created by Florent on 02/04/2015.
+ * Created by Antoine BOUCHINA on 02/04/2015.
  */
 public class FragContactsDetails extends Fragment {
 

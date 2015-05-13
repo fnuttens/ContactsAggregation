@@ -7,7 +7,7 @@ import alcatel.contactsaggregation.Contact;
 import alcatel.contactsaggregation.Providers.Provider;
 
 /**
- * Created by elfaus on 06/03/2015.
+ * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public class AlcatelProvider extends Provider {
 
@@ -75,6 +75,26 @@ public class AlcatelProvider extends Provider {
     @Override
     // TODO : implement
     public String getCurrentVersion() {
+        return null;
+    }
+
+    @Override
+    public String getAuthUri() {
+        return null;
+    }
+
+    @Override
+    public void authCallback(String uri) {
+
+    }
+
+    @Override
+    public String getToken() {
+        return null;
+    }
+
+    @Override
+    public Long getTimeout() {
         return null;
     }
 }

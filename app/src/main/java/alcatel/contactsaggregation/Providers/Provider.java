@@ -6,7 +6,7 @@ import java.util.List;
 import alcatel.contactsaggregation.Contact;
 
 /**
- * Created by elfaus on 06/03/2015.
+ * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public abstract class Provider {
 
@@ -28,7 +28,8 @@ public abstract class Provider {
 
     public abstract void addContact(Contact c);
 
-    private String getInstalledVersion() {
+    private String getInstalledVersion()
+    {
         return "";
     }
 
@@ -42,8 +43,20 @@ public abstract class Provider {
 
     public abstract String getCurrentVersion();
 
+    /**
+     * This method allow the application to get the auth endpoint uri in order
+     * to run it inside a view getting a new token
+     * @return OAuth auth endpoint uri with parameters
+     */
+    public abstract String getAuthUri();
+
+    public abstract void authCallback(String uri);
+    public abstract String getToken();
+    public abstract Long getTimeout();
+
     // todo implement create, alter table
-    public void load() {
+    public void load()
+    {
         this.getInstalledVersion();
         this.getCurrentVersion();
     }
