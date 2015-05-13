@@ -1,3 +1,7 @@
+/**
+ * Created by Loïc LEUILLIOT on 06/03/2015.
+ */
+
 package alcatel.contactsaggregation;
 
 import android.support.v7.app.ActionBarActivity;
@@ -55,8 +59,6 @@ public class OAuthLoginView extends ActionBarActivity {
                         Log.e("[OAUTH-LOGIN]", e.getMessage());
                     }
                 }
-
-                finish();
 
                 return false;
             }

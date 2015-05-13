@@ -15,7 +15,7 @@ import alcatel.contactsaggregation.Providers.HelperProvider;
 import alcatel.contactsaggregation.Providers.Provider;
 
 /**
- * Created by elfaus on 06/03/2015.
+ * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public class GoogleProvider extends Provider {
 
@@ -126,7 +126,11 @@ public class GoogleProvider extends Provider {
         final HashMap<String, String> params = HelperProvider.getParameters(uri);
 
         this._accessToken = params.get("access_token");
-        this._timeout = Long.parseLong(params.get("expires_in")) + currentTimeStamp;
+        if (params.containsKey("expires_in")) {
+            this._timeout = Long.parseLong(params.get("expires_in")) + currentTimeStamp;
+        } else {
+            this._timeout = 0;
+        }
     }
 
     protected void setContactList(String json) {

@@ -6,7 +6,7 @@ import java.util.List;
 import alcatel.contactsaggregation.Contact;
 
 /**
- * Created by elfaus on 06/03/2015.
+ * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public abstract class Provider {
 

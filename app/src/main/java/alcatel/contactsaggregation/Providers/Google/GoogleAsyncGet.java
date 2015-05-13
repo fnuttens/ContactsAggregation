@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 /**
- * Created by elfaus on 08/05/2015.
+ * Created by Loïc LEUILLIOT on 08/05/2015.
  */
 public class GoogleAsyncGet extends AsyncTask<String[], Integer, String> {
 

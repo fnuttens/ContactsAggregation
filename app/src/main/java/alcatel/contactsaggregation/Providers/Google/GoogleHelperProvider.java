@@ -5,7 +5,7 @@ import android.util.Log;
 import alcatel.contactsaggregation.Providers.HelperProvider;
 
 /**
- * Created by elfaus on 30/04/2015.
+ * Created by Loïc LEUILLIOT on 30/04/2015.
  */
 class GoogleHelperProvider {
 
@@ -17,10 +17,6 @@ class GoogleHelperProvider {
     private static String SECRET_ID = "i7wErbI7JT-tyYxq8o0p7DdT";
     private static String APPLICATION_NAME = "ContactAggregation";
     private static String OAUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/auth";
-
-    // OAuth parameters
-    //private long _timeout; // timestamp of timeout token
-    //private String _accessToken; // current access token
 
     // - - - - - - - - - - - - - - - - - -
 
