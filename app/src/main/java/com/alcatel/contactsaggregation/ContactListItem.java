@@ -1,4 +1,4 @@
-package alcatel.contactsaggregation;
+package com.alcatel.contactsaggregation;
 
 /**
  * Created by Antoine BOUCHINA on 02/04/2015.

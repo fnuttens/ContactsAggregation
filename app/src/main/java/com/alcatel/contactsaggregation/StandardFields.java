@@ -1,4 +1,4 @@
-package alcatel.contactsaggregation;
+package com.alcatel.contactsaggregation;
 
 /**
  * Created by elfaus on 06/03/2015.

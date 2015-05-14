@@ -2,7 +2,7 @@
  * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 
-package alcatel.contactsaggregation;
+package com.alcatel.contactsaggregation.Core.Views;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,7 +14,8 @@ import android.webkit.WebViewClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import alcatel.contactsaggregation.Providers.Provider;
+import com.alcatel.contactsaggregation.Providers.Provider;
+import com.alcatel.contactsaggregation.R;
 
 public class OAuthLoginView extends ActionBarActivity {
 
@@ -24,7 +25,7 @@ public class OAuthLoginView extends ActionBarActivity {
         setContentView(R.layout.activity_oauth_login_view);
 
         // Get the webView
-        WebView oAuthLoginWebView = (WebView) findViewById(R.id.activity_oauth_login);
+        final WebView oAuthLoginWebView = (WebView) findViewById(R.id.activity_oauth_login);
 
         // Get the Provider OAuth endpoint uri and its instance
         final String oAuthEndpoint = getIntent().getStringExtra("OAuthEndpoint");
@@ -35,10 +36,7 @@ public class OAuthLoginView extends ActionBarActivity {
         // Override redirection comportment
         oAuthLoginWebView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (!url.equals(oAuthEndpoint)) {
-                    Log.d("[OAUTH-LOGIN]", url);  // TODO: implement
-                    Log.d("[OAUTH-LOGIN]", provider);
-
+                if (url.startsWith("http://127.0.0.1")) {
                     try {
                         // Get provider instance by reflection
                         Class cls = Class.forName(provider);
@@ -46,8 +44,8 @@ public class OAuthLoginView extends ActionBarActivity {
                         Object o = met.invoke(null, new Object[0]);
 
                         // Set the new token
-                        Provider providerInstance = (Provider) o;
                         ((Provider) o).authCallback(url);
+                        ((Provider) o).pullContacts();
 
                     } catch (ClassNotFoundException e) {
                         Log.e("[OAUTH-LOGIN]", e.getMessage());
