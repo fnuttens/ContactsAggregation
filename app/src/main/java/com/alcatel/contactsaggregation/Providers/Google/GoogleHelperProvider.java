@@ -2,7 +2,9 @@ package com.alcatel.contactsaggregation.Providers.Google;
 
 import android.util.Log;
 
+import com.alcatel.contactsaggregation.Core.Models.Contact;
 import com.alcatel.contactsaggregation.Providers.HelperProvider;
+import com.alcatel.contactsaggregation.StandardFields;
 
 /**
  * Created by Loïc LEUILLIOT on 30/04/2015.
@@ -44,6 +46,27 @@ class GoogleHelperProvider {
         String uri = "https://www.google.com/m8/feeds/contacts/%s/full?alt=%s";
 
         String formattedUri = String.format(uri, loginHint, alt);
+
+        Log.d("[Google]", formattedUri);
+
+        return formattedUri;
+    }
+
+    protected static String updateContactURI(String loginHint, Contact c) {
+        String uri = "https://www.google.com/m8/feeds/contacts/%s/full/%s";
+
+        String formattedUri = String.format(uri, loginHint, c.getField(StandardFields.FN));
+
+        Log.d("[Google]", formattedUri);
+
+        return formattedUri;
+    }
+
+
+    protected static String deleteContactURI(String loginHint, Contact c) {
+        String uri = "https://www.google.com/m8/feeds/contacts/%s/full/%s";
+
+        String formattedUri = String.format(uri, loginHint, c.getField(StandardFields.FN));
 
         Log.d("[Google]", formattedUri);
 

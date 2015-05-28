@@ -5,7 +5,9 @@ import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -102,7 +104,9 @@ public class GoogleProvider extends Provider {
     @Override
     // TODO : implement
     public void deleteContact(Contact c) {
+        String deleteContactUri = GoogleHelperProvider.deleteContactURI(LOGIN_HINT, c);
 
+        new GoogleAsyncDeleteContact(c).execute(new String[]{deleteContactUri, this._accessToken});
     }
 
     @Override
@@ -114,7 +118,13 @@ public class GoogleProvider extends Provider {
     @Override
     // TODO : implement
     public Contact getContact(Contact c) {
-
+        for (Contact tmpContact : this._contactList) {
+            if (tmpContact.getField(StandardFields.FN) == c.getField(StandardFields.FN)) {
+                return tmpContact;
+            } else if (tmpContact.getField(StandardFields.TITLE) == c.getField(StandardFields.TITLE)) {
+                return tmpContact;
+            }
+        }
         return null;
     }
 
@@ -125,7 +135,11 @@ public class GoogleProvider extends Provider {
 
     @Override
     // TODO : implement
-    public void updateContact(Contact c) {}
+    public void updateContact(Contact c) {
+        String putContactUri = GoogleHelperProvider.updateContactURI(LOGIN_HINT, c);
+
+        new GoogleAsyncUpdateContact(c).execute(new String[]{putContactUri, this._accessToken});
+    }
 
     @Override
     // TODO : implement
@@ -135,6 +149,7 @@ public class GoogleProvider extends Provider {
 
     /**
      * Created by Loïc LEUILLIOT on 08/05/2015.
+     * https://developers.google.com/google-apps/contacts/v3/#retrieving_all_contacts
      */
     private class GoogleAsyncGetContact extends AsyncTask<String[], Integer, String> {
 
@@ -237,5 +252,89 @@ public class GoogleProvider extends Provider {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Created by Loïc LEUILLIOT on 08/05/2015.
+     * https://developers.google.com/google-apps/contacts/v3/#updating_contacts
+     */
+    private class GoogleAsyncUpdateContact extends AsyncTask<String[], Integer, String> {
+
+        private Contact _contact;
+
+        public GoogleAsyncUpdateContact(Contact data) {
+            this._contact = data;
+        }
+
+        @Override
+        protected String doInBackground(String[]... putUrls) {
+            String response = "";
+            for (String[] url : putUrls) {
+                DefaultHttpClient client = new DefaultHttpClient();
+                HttpPut put = new HttpPut(url[0]);
+                put.addHeader("Authorization", "Bearer " + url[1]);
+
+                try {
+                    HttpResponse execute = client.execute(put);
+                    InputStream content = execute.getEntity().getContent();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (ClientProtocolException e) {
+                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                } catch (IOException e) {
+                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                }
+            }
+
+            return response;
+        }
+
+    }
+
+    /**
+     * Created by Loïc LEUILLIOT on 29/05/2015.
+     * https://developers.google.com/google-apps/contacts/v3/#deleting_contacts
+     */
+    private class GoogleAsyncDeleteContact extends AsyncTask<String[], Integer, String> {
+
+        private Contact _contact;
+
+        public GoogleAsyncDeleteContact(Contact data) {
+            this._contact = data;
+        }
+
+        @Override
+        protected String doInBackground(String[]... deleteUrls) {
+            String response = "";
+            for (String[] url : deleteUrls) {
+                DefaultHttpClient client = new DefaultHttpClient();
+                HttpDelete put = new HttpDelete(url[0]);
+                put.addHeader("Authorization", "Bearer " + url[1]);
+
+                try {
+                    HttpResponse execute = client.execute(put);
+                    InputStream content = execute.getEntity().getContent();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (ClientProtocolException e) {
+                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                } catch (IOException e) {
+                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                }
+            }
+
+            return response;
+        }
+
     }
 }
