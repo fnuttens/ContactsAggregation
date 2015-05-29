@@ -12,13 +12,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alcatel.contactsaggregation.Core.Models.Contact;
 import com.alcatel.contactsaggregation.StandardFields;
@@ -79,7 +88,15 @@ public class GoogleProvider extends Provider {
         String fetchContactUri = GoogleHelperProvider.getAllContactURI(LOGIN_HINT);
 
         // call async request
-        new GoogleAsyncGetContact(this._contactList).execute(new String[]{fetchContactUri, this._accessToken});
+        try {
+            // setup the URL
+            URL url = new URL(fetchContactUri);
+            // call async request using this url
+            new GoogleAsyncGetContact(this._contactList).execute(url);
+        } catch (MalformedURLException e) {
+            Log.e("[GOOGLE-GET]", e.getMessage());
+        }
+
     }
 
     @Override
@@ -151,7 +168,7 @@ public class GoogleProvider extends Provider {
      * Created by Loïc LEUILLIOT on 08/05/2015.
      * https://developers.google.com/google-apps/contacts/v3/#retrieving_all_contacts
      */
-    private class GoogleAsyncGetContact extends AsyncTask<String[], Integer, String> {
+    private class GoogleAsyncGetContact extends AsyncTask<URL, Integer, String> {
 
         private ArrayList<Contact> _contacts;
 
@@ -160,25 +177,30 @@ public class GoogleProvider extends Provider {
         }
 
         @Override
-        protected String doInBackground(String[]... getUrls) {
+        /**
+         * Return a body http content or an empty string
+         */
+        protected String doInBackground(URL... getUrls) {
             String response = "";
-            for (String[] url : getUrls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpGet get = new HttpGet(url[0]);
-                get.addHeader("Authorization", "Bearer " + url[1]);
+
+            // Iterate over request packet
+            for (URL url : getUrls) {
+
+                // Init a new http socket
+                HttpURLConnection urlConnection;
 
                 try {
-                    HttpResponse execute = client.execute(get);
-                    InputStream content = execute.getEntity().getContent();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (ClientProtocolException e) {
-                    Log.e("[GOOGLE-GET]", e.getMessage());
+                    // open the socket using the found url
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    // adding the authentication header with our seed
+                    urlConnection.addRequestProperty("Authorization", "Bearer " + _accessToken);
+                    // get the stream
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // TODO : use response code / response message in order to manage authentication exception
+                    // get the stream content and store it in order to return it after the connection
+                    response = HelperProvider.readStream(in);
+                    // close the socket
+                    urlConnection.disconnect();
                 } catch (IOException e) {
                     Log.e("[GOOGLE-GET]", e.getMessage());
                 }
@@ -252,6 +274,7 @@ public class GoogleProvider extends Provider {
                 e.printStackTrace();
             }
         }
+
     }
 
     /**

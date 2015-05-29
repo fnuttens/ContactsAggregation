@@ -5,6 +5,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -95,6 +99,22 @@ public class HelperProvider {
         // Create a state token to prevent request forgery.
         // Store it in the session for later validation.
         return new BigInteger(130, new SecureRandom()).toString(size);
+    }
+
+    public static String readStream(InputStream in) {
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(in));
+        String response = "";
+        String s;
+
+        try {
+            while ((s = buffer.readLine()) != null) {
+                response += s;
+            }
+        } catch (IOException e) {
+            Log.e("[HELPER-PROV]", response);
+        }
+
+        return response;
     }
 
 }
