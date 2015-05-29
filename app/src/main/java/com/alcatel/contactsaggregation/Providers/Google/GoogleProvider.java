@@ -3,31 +3,20 @@ package com.alcatel.contactsaggregation.Providers.Google;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.alcatel.contactsaggregation.Core.Models.Contact;
 import com.alcatel.contactsaggregation.StandardFields;
@@ -123,7 +112,12 @@ public class GoogleProvider extends Provider {
     public void deleteContact(Contact c) {
         String deleteContactUri = GoogleHelperProvider.deleteContactURI(LOGIN_HINT, c);
 
-        new GoogleAsyncDeleteContact(c).execute(new String[]{deleteContactUri, this._accessToken});
+        try {
+            URL url = new URL(deleteContactUri);
+            new GoogleAsyncDeleteContact(c).execute(url);
+        } catch (MalformedURLException e) {
+            Log.e("[GOOGLE-DEL]", e.getMessage());
+        }
     }
 
     @Override
@@ -154,8 +148,12 @@ public class GoogleProvider extends Provider {
     // TODO : implement
     public void updateContact(Contact c) {
         String putContactUri = GoogleHelperProvider.updateContactURI(LOGIN_HINT, c);
-
-        new GoogleAsyncUpdateContact(c).execute(new String[]{putContactUri, this._accessToken});
+        try {
+            URL url = new URL(putContactUri);
+            new GoogleAsyncUpdateContact(c).execute(url);
+        } catch (MalformedURLException e) {
+            Log.e("[GOOGLE-PUT]", e.getMessage());
+        }
     }
 
     @Override
@@ -210,6 +208,10 @@ public class GoogleProvider extends Provider {
         }
 
         @Override
+        /**
+         * Iterate over the JSON result in order to isolate contact data and store them into
+         * the arrayList
+         */
         protected void onPostExecute(String result) {
             Log.d("[GOOGLE-GET]", result);
             try {
@@ -281,7 +283,7 @@ public class GoogleProvider extends Provider {
      * Created by Loïc LEUILLIOT on 08/05/2015.
      * https://developers.google.com/google-apps/contacts/v3/#updating_contacts
      */
-    private class GoogleAsyncUpdateContact extends AsyncTask<String[], Integer, String> {
+    private class GoogleAsyncUpdateContact extends AsyncTask<URL, Integer, String> {
 
         private Contact _contact;
 
@@ -290,27 +292,29 @@ public class GoogleProvider extends Provider {
         }
 
         @Override
-        protected String doInBackground(String[]... putUrls) {
+        protected String doInBackground(URL... putUrls) {
             String response = "";
-            for (String[] url : putUrls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpPut put = new HttpPut(url[0]);
-                put.addHeader("Authorization", "Bearer " + url[1]);
+
+            // Iterate over request packet
+            for (URL url : putUrls) {
+
+                // Init a new http socket
+                HttpURLConnection urlConnection;
 
                 try {
-                    HttpResponse execute = client.execute(put);
-                    InputStream content = execute.getEntity().getContent();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (ClientProtocolException e) {
-                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                    // open the socket using the found url
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    // adding the authentication header with our seed
+                    urlConnection.addRequestProperty("Authorization", "Bearer " + _accessToken);
+                    // get the stream
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // TODO : use response code / response message in order to manage authentication exception
+                    // get the stream content and store it in order to return it after the connection
+                    response = HelperProvider.readStream(in);
+                    // close the socket
+                    urlConnection.disconnect();
                 } catch (IOException e) {
-                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                    Log.e("[GOOGLE-GET]", e.getMessage());
                 }
             }
 
@@ -323,7 +327,7 @@ public class GoogleProvider extends Provider {
      * Created by Loïc LEUILLIOT on 29/05/2015.
      * https://developers.google.com/google-apps/contacts/v3/#deleting_contacts
      */
-    private class GoogleAsyncDeleteContact extends AsyncTask<String[], Integer, String> {
+    private class GoogleAsyncDeleteContact extends AsyncTask<URL, Integer, String> {
 
         private Contact _contact;
 
@@ -332,27 +336,32 @@ public class GoogleProvider extends Provider {
         }
 
         @Override
-        protected String doInBackground(String[]... deleteUrls) {
+        protected String doInBackground(URL... deleteUrls) {
             String response = "";
-            for (String[] url : deleteUrls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpDelete put = new HttpDelete(url[0]);
-                put.addHeader("Authorization", "Bearer " + url[1]);
+
+            // Iterate over request packet
+            for (URL url : deleteUrls) {
+
+                // Init a new http socket
+                HttpURLConnection urlConnection;
 
                 try {
-                    HttpResponse execute = client.execute(put);
-                    InputStream content = execute.getEntity().getContent();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-                } catch (ClientProtocolException e) {
-                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                    // open the socket using the found url
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    // adding the authentication header with our seed
+                    urlConnection.addRequestProperty("Authorization", "Bearer " + _accessToken);
+                    // set the socket to a http-delete
+                    urlConnection.setDoInput(true);
+                    urlConnection.setRequestMethod("DELETE");
+                    // get the stream
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // TODO : use response code / response message in order to manage authentication exception
+                    // get the stream content and store it in order to return it after the connection
+                    response = HelperProvider.readStream(in);
+                    // close the socket
+                    urlConnection.disconnect();
                 } catch (IOException e) {
-                    Log.e("[GOOGLE-PUT]", e.getMessage());
+                    Log.e("[GOOGLE-GET]", e.getMessage());
                 }
             }
 
