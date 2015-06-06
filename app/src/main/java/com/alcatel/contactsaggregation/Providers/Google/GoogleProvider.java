@@ -3,14 +3,17 @@ package com.alcatel.contactsaggregation.Providers.Google;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.alcatel.contactsaggregation.Core.Models.Contact;
+import com.alcatel.contactsaggregation.Providers.HelperProvider;
+import com.alcatel.contactsaggregation.Providers.Provider;
+import com.alcatel.contactsaggregation.StandardFields;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,23 +21,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.alcatel.contactsaggregation.Core.Models.Contact;
-import com.alcatel.contactsaggregation.StandardFields;
-import com.alcatel.contactsaggregation.Providers.HelperProvider;
-import com.alcatel.contactsaggregation.Providers.Provider;
-
 /**
  * Created by Loïc LEUILLIOT on 06/03/2015.
  */
 public class GoogleProvider extends Provider {
 
-    private static GoogleProvider instance = new GoogleProvider();
-
-    private ArrayList<Contact> _contactList = new ArrayList<Contact>();
-
     // Debug parameters
     private static final String LOGIN_HINT = "e.elfaus@gmail.com";
-
+    private static GoogleProvider instance = new GoogleProvider();
+    private ArrayList<Contact> _contactList = new ArrayList<Contact>();
     // OAuth parameters
     private long _timeout; // timestamp of timeout token
     private String _accessToken; // current access token
@@ -42,6 +37,7 @@ public class GoogleProvider extends Provider {
     private GoogleProvider() {
         this._timeout = 0;
         this._accessToken = "";
+        this.register("Google");
     }
 
     public static GoogleProvider getInstance() {

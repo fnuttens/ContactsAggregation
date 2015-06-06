@@ -1,9 +1,9 @@
 package com.alcatel.contactsaggregation.Providers;
 
+import com.alcatel.contactsaggregation.Core.Models.Contact;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alcatel.contactsaggregation.Core.Models.Contact;
 
 /**
  * Created by Loïc LEUILLIOT on 06/03/2015.
@@ -89,4 +89,11 @@ public abstract class Provider {
      * @return The current timeout set to the Provider
      */
     public abstract Long getTimeout();
+
+    /**
+     * @param provider
+     */
+    public void register(String provider) {
+        //TODO: Enregister le provider dans la table si il n'y est pas déjà présent
+    }
 }
