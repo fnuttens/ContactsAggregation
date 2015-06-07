@@ -3,7 +3,10 @@ package com.alcatel.contactsaggregation.Providers.Google;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.alcatel.contactsaggregation.Core.DAO.DAOContact;
+import com.alcatel.contactsaggregation.Core.DAO.DAOProvider;
 import com.alcatel.contactsaggregation.Core.Models.Contact;
+import com.alcatel.contactsaggregation.MainActivity;
 import com.alcatel.contactsaggregation.Providers.HelperProvider;
 import com.alcatel.contactsaggregation.Providers.Provider;
 import com.alcatel.contactsaggregation.StandardFields;
@@ -37,7 +40,7 @@ public class GoogleProvider extends Provider {
     private GoogleProvider() {
         this._timeout = 0;
         this._accessToken = "";
-        this.register("Google");
+        this.register(this);
     }
 
     public static GoogleProvider getInstance() {
@@ -82,6 +85,15 @@ public class GoogleProvider extends Provider {
             Log.e("[GOOGLE-GET]", e.getMessage());
         }
 
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+
+        // Stores the google contacts in the database
+        for (Contact c : this._contactList) {
+            daoContact.insert(c);
+        }
+
+        daoContact.close();
     }
 
     @Override
@@ -95,6 +107,11 @@ public class GoogleProvider extends Provider {
         } else {
             this._timeout = 0;
         }
+
+        DAOProvider daoProvider = new DAOProvider(MainActivity.bdd);
+        daoProvider.open();
+        daoProvider.insertCredential(this.LOGIN_HINT, this, this._accessToken, this._timeout);
+        daoProvider.close();
     }
 
     @Override
@@ -104,7 +121,6 @@ public class GoogleProvider extends Provider {
     // API methods / endpoints
 
     @Override
-    // TODO : implement
     public void deleteContact(Contact c) {
         String deleteContactUri = GoogleHelperProvider.deleteContactURI(LOGIN_HINT, c);
 
@@ -114,25 +130,34 @@ public class GoogleProvider extends Provider {
         } catch (MalformedURLException e) {
             Log.e("[GOOGLE-DEL]", e.getMessage());
         }
+
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+        daoContact.delete(c);
+        daoContact.close();
     }
 
     @Override
-    // TODO : implement
     public void deleteContact(List<Contact> c) {
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
 
+        for (Contact contact : c) {
+            daoContact.delete(contact);
+        }
+
+        daoContact.close();
     }
 
     @Override
     // TODO : implement
     public Contact getContact(Contact c) {
-        for (Contact tmpContact : this._contactList) {
-            if (tmpContact.getField(StandardFields.FN) == c.getField(StandardFields.FN)) {
-                return tmpContact;
-            } else if (tmpContact.getField(StandardFields.TITLE) == c.getField(StandardFields.TITLE)) {
-                return tmpContact;
-            }
-        }
-        return null;
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+        HashMap<StandardFields, String> contactDatas = daoContact.getContactDatas(c);
+        daoContact.close();
+
+        return new Contact(c.getUniqueId(), contactDatas);
     }
 
     @Override
@@ -150,11 +175,20 @@ public class GoogleProvider extends Provider {
         } catch (MalformedURLException e) {
             Log.e("[GOOGLE-PUT]", e.getMessage());
         }
+
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+        daoContact.update(c);
+        daoContact.close();
     }
 
     @Override
-    // TODO : implement
-    public void addContact(Contact c) {}
+    public void addContact(Contact c) {
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+        daoContact.insert(c);
+        daoContact.close();
+    }
 
     // - - - - -
 
@@ -209,6 +243,9 @@ public class GoogleProvider extends Provider {
          * the arrayList
          */
         protected void onPostExecute(String result) {
+            // DAO instantiation
+            DAOContact daoContact = new DAOContact(MainActivity.bdd);
+
             Log.d("[GOOGLE-GET]", result);
             try {
                 JSONObject reader = new JSONObject(result);
@@ -217,6 +254,8 @@ public class GoogleProvider extends Provider {
                 JSONArray contactsArray = (JSONArray) HelperProvider.getJSONObjectByPath(reader, "feed.entry");
 
                 if (contactsArray != null) {
+
+                    daoContact.open();
 
                     for (int i = 0; i < contactsArray.length(); i++) {
 
@@ -266,8 +305,13 @@ public class GoogleProvider extends Provider {
 
                         // insert the contact to the list
                         this._contacts.add(c);
+
+                        daoContact.insert(c);
                     }
+
+                    daoContact.close();
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

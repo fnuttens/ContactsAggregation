@@ -1,10 +1,10 @@
 package com.alcatel.contactsaggregation.Core.Models;
 
+import com.alcatel.contactsaggregation.StandardFields;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.alcatel.contactsaggregation.StandardFields;
 
 /**
  * Created by Loïc LEUILLIOT on 06/03/2015.
@@ -16,6 +16,11 @@ public class Contact implements Serializable {
 
     public Contact() {
         this.fields = new HashMap<>();
+    }
+
+    public Contact(String uniqueId, HashMap<StandardFields, String> fields) {
+        this.uniqueId = uniqueId;
+        this.fields = fields;
     }
 
     // TODO : implement

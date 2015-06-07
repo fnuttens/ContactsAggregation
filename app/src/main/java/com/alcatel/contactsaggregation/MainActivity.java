@@ -12,22 +12,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
 import com.alcatel.contactsaggregation.Core.Adapter.ContactListItemAdapter;
+import com.alcatel.contactsaggregation.Core.DAO.DatabaseHandler;
 import com.alcatel.contactsaggregation.Core.Fragments.FragContactsDetails;
 import com.alcatel.contactsaggregation.Core.Models.Contact;
+import com.alcatel.contactsaggregation.Core.Views.OAuthLoginView;
 import com.alcatel.contactsaggregation.Core.Views.SettingsActivity;
 import com.alcatel.contactsaggregation.Providers.Google.GoogleProvider;
-import com.alcatel.contactsaggregation.Core.Views.OAuthLoginView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
+    private final static int VERSION = 1;
+    private final static String NAME = "ContactsAggregation.db";
+    public static DatabaseHandler bdd;
     private ContactListItemAdapter _contactAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bdd = new DatabaseHandler(getApplicationContext(), NAME, null, VERSION);
+
         setContentView(R.layout.activity_main);
 
         // 2015.05 - elfaus - Updatable contact list

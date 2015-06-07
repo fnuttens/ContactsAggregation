@@ -1,6 +1,8 @@
 package com.alcatel.contactsaggregation.Providers;
 
+import com.alcatel.contactsaggregation.Core.DAO.DAOProvider;
 import com.alcatel.contactsaggregation.Core.Models.Contact;
+import com.alcatel.contactsaggregation.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +95,16 @@ public abstract class Provider {
     /**
      * @param provider
      */
-    public void register(String provider) {
-        //TODO: Enregister le provider dans la table si il n'y est pas déjà présent
+    public void register(Provider provider) {
+        DAOProvider daoProvider = new DAOProvider(MainActivity.bdd);
+        daoProvider.open();
+
+        // If the provider already exists in the database, we don't have to insert it a second time
+        if (daoProvider.exists(provider)) {
+            return;
+        }
+
+        daoProvider.insert(provider);
+        daoProvider.close();
     }
 }
