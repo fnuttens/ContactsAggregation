@@ -36,7 +36,7 @@ public class DAOContact extends DAOBase {
 
     public void delete(Contact contact) {
         this.deleteContactDatas(contact);
-        m_db.delete(m_handler.CONTACT_TABLE_NAME, m_handler.CONTACT_ID_COLUMN + "=" + contact.getUniqueId(), null);
+        m_db.delete(m_handler.CONTACT_TABLE_NAME, m_handler.CONTACT_ID_COLUMN + "= '" + contact.getUniqueId() + "'", null);
     }
 
     public void update(Contact contact) {
@@ -50,7 +50,7 @@ public class DAOContact extends DAOBase {
 
         Cursor c = m_db.query(m_handler.CONTACTDATA_TABLE_NAME,
                 null,
-                m_handler.PROVIDER_ID_COLUMN + "=" + providerId,
+                m_handler.PROVIDER_ID_COLUMN + "= '" + providerId + "'",
                 null, null, null, null);
 
         while (c.moveToNext()) {
@@ -64,7 +64,7 @@ public class DAOContact extends DAOBase {
     public HashMap<StandardFields, String> getContactDatas(Contact contact) {
         Cursor c = m_db.query(m_handler.CONTACTDATA_TABLE_NAME,
                 new String[]{m_handler.FIELD_KEY_COLUMN, m_handler.CONTACTDATA_VALUE_COLUMN},
-                m_handler.CONTACT_ID_COLUMN + "=" + contact.getUniqueId(),
+                m_handler.CONTACT_ID_COLUMN + "= '" + contact.getUniqueId() + "'",
                 null, null, null, null);
 
         HashMap<StandardFields, String> contactDatas = new HashMap<>();
@@ -94,7 +94,7 @@ public class DAOContact extends DAOBase {
     }
 
     private void deleteContactDatas(Contact contact) {
-        m_db.delete(m_handler.CONTACTDATA_TABLE_NAME, m_handler.CONTACT_ID_COLUMN + "=" + contact.getUniqueId(), null);
+        m_db.delete(m_handler.CONTACTDATA_TABLE_NAME, m_handler.CONTACT_ID_COLUMN + "= '" + contact.getUniqueId() + "'", null);
     }
 
     private void updateContactDatas(Contact contact) {
@@ -109,7 +109,7 @@ public class DAOContact extends DAOBase {
             values.put(m_handler.CONTACT_ID_COLUMN, contactId);
             values.put(m_handler.FIELD_KEY_COLUMN, entry.getKey().name());
 
-            m_db.update(m_handler.CONTACTDATA_TABLE_NAME, values, m_handler.CONTACT_ID_COLUMN + "=" + contactId, null);
+            m_db.update(m_handler.CONTACTDATA_TABLE_NAME, values, m_handler.CONTACT_ID_COLUMN + "= '" + contactId + "'", null);
         }
     }
 }

@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bdd = new DatabaseHandler(getApplicationContext(), NAME, null, VERSION);
+        bdd = new DatabaseHandler(getBaseContext(), NAME, null, VERSION);
 
         setContentView(R.layout.activity_main);
 

@@ -41,26 +41,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             PROVIDER_ID_COLUMN + " TEXT PRIMARY KEY," +
             PROVIDER_PACKAGE_COLUMN + " TEXT);";
     private final static String PROVIDER_TABLE_DROP = "DROP TABLE IF EXISTS " + PROVIDER_TABLE_NAME + ";";
-    private final static String CREDENTIAL_TABLE_CREATE = "CREATE TABLE" + CREDENTIAL_TABLE_NAME + "(" +
+    private final static String CREDENTIAL_TABLE_CREATE = "CREATE TABLE " + CREDENTIAL_TABLE_NAME + "(" +
             CREDENTIAL_LOGIN_COLUMN + " TEXT PRIMARY KEY," +
             PROVIDER_ID_COLUMN + " TEXT," +
             CREDENTIAL_TOKEN_COLUMN + " TEXT NOT NULL," +
             CREDENTIAL_TIMEOUT_COLUMN + " REAL," +
             "FOREIGN KEY(" + PROVIDER_ID_COLUMN + ") REFERENCES " +
-            PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + ");";
+            PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + "));";
     private final static String CREDENTIAL_TABLE_DROP = "DROP TABLE IF EXISTS " + CREDENTIAL_TABLE_NAME + ";";
     private final static String FIELD_TABLE_CREATE = "CREATE TABLE " + FIELD_TABLE_NAME + "(" +
             FIELD_KEY_COLUMN + " TEXT PRIMARY KEY," +
             FIELD_DESCRIPTION_COLUMN + " TEXT);";
     private final static String FIELD_TABLE_DROP = "DROP TABLE IF EXISTS " + FIELD_TABLE_NAME + ";";
     private final static String MERGEDCONTACT_TABLE_CREATE = "CREATE TABLE " + MERGEDCONTACT_TABLE_NAME + "(" +
-            MERGEDCONTACT_ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT)";
+            MERGEDCONTACT_ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT);";
     private final static String MERGEDCONTACT_TABLE_DROP = "DROP TABLE IF EXISTS " + MERGEDCONTACT_TABLE_NAME + ";";
     private final static String CONTACT_TABLE_CREATE = "CREATE TABLE " + CONTACT_TABLE_NAME + "(" +
             CONTACT_ID_COLUMN + " TEXT PRIMARY KEY," +
             MERGEDCONTACT_ID_COLUMN + " INTEGER," +
             "FOREIGN KEY(" + MERGEDCONTACT_ID_COLUMN + ") REFERENCES " +
-            MERGEDCONTACT_TABLE_NAME + "(" + MERGEDCONTACT_ID_COLUMN + ");";
+            MERGEDCONTACT_TABLE_NAME + "(" + MERGEDCONTACT_ID_COLUMN + "));";
     private final static String CONTACT_TABLE_DROP = "DROP TABLE IF EXISTS " + CONTACT_TABLE_NAME + ";";
     private final static String CONTACTDATA_TABLE_CREATE = "CREATE TABLE " + CONTACTDATA_TABLE_NAME + "(" +
             CONTACTDATA_VALUE_COLUMN + " TEXT PRIMARY KEY," +
@@ -69,10 +69,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             FIELD_KEY_COLUMN + " TEXT," +
             "FOREIGN KEY(" + PROVIDER_ID_COLUMN + ") REFERENCES " +
             PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + ")," +
-            "FOREIGN KEY(" + CONTACT_ID_COLUMN + ") REFERENCES" +
+            "FOREIGN KEY(" + CONTACT_ID_COLUMN + ") REFERENCES " +
             CONTACT_TABLE_NAME + "(" + CONTACT_ID_COLUMN + ")," +
             "FOREIGN KEY(" + FIELD_KEY_COLUMN + ") REFERENCES " +
-            FIELD_TABLE_NAME + "(" + FIELD_KEY_COLUMN + ");";
+            FIELD_TABLE_NAME + "(" + FIELD_KEY_COLUMN + "));";
     private final static String CONTACTDATA_TABLE_DROP = "DROP TABLE IF EXISTS " + FIELD_TABLE_NAME + ";";
 
     // Initializing data insertion
