@@ -2,6 +2,7 @@ package com.alcatel.contactsaggregation.Core.DAO;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.alcatel.contactsaggregation.Providers.Provider;
 
@@ -47,7 +48,10 @@ public class DAOProvider extends DAOBase {
         values.put(m_handler.CREDENTIAL_TOKEN_COLUMN, token);
         values.put(m_handler.CREDENTIAL_TIMEOUT_COLUMN, timeout);
 
-        return m_db.insert(m_handler.CREDENTIAL_TABLE_NAME, null, values);
+        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CREDENTIAL_TABLE_NAME + " (" + m_handler.CREDENTIAL_LOGIN_COLUMN + "," + m_handler.PROVIDER_ID_COLUMN + "," + m_handler.CREDENTIAL_TOKEN_COLUMN + "," +
+        m_handler.CREDENTIAL_TIMEOUT_COLUMN + ") VALUES ('" + login + "', '" + provider.getClass().getName() + "', '" + token + "'," + timeout + ")");
+        //return m_db.insert(m_handler.CREDENTIAL_TABLE_NAME, null, values);
+        return 0;
     }
 
     public boolean exists(Provider provider) {
@@ -59,7 +63,7 @@ public class DAOProvider extends DAOBase {
                 m_handler.PROVIDER_ID_COLUMN + "= '" + id + "'",
                 null, null, null, null);
 
-        providers.close();
+        //providers.close();
         return (providers.getCount() != 0);
     }
 }

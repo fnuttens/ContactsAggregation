@@ -23,14 +23,16 @@ public class DAOContact extends DAOBase {
     public void insert(Contact newContact) {
 
         // Insert new merged contact
-        m_db.insert(m_handler.MERGEDCONTACT_TABLE_NAME, null, null);
+        //m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.MERGEDCONTACT_TABLE_NAME + " VALUES ");
+        //m_db.insert(m_handler.MERGEDCONTACT_TABLE_NAME, null, null);
 
         // Contact insert
         ContentValues values = new ContentValues();
         values.put(m_handler.CONTACT_ID_COLUMN, newContact.getUniqueId());
         values.put(m_handler.MERGEDCONTACT_ID_COLUMN, 1);
 
-        m_db.insert(m_handler.CONTACT_TABLE_NAME, null, values);
+        //m_db.insert(m_handler.CONTACT_TABLE_NAME, null, values);
+        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACT_TABLE_NAME + "(" + m_handler.CONTACT_ID_COLUMN + "," + m_handler.MERGEDCONTACT_ID_COLUMN + ") VALUES ('" + newContact.getUniqueId() + "', 1)");
         this.insertContactDatas(newContact);
     }
 
@@ -89,7 +91,10 @@ public class DAOContact extends DAOBase {
             values.put(m_handler.CONTACT_ID_COLUMN, contactId);
             values.put(m_handler.FIELD_KEY_COLUMN, entry.getKey().name());
 
-            m_db.insert(m_handler.CONTACTDATA_TABLE_NAME, null, values);
+            m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACTDATA_TABLE_NAME + " (" + m_handler.CONTACTDATA_VALUE_COLUMN + "," + m_handler.PROVIDER_ID_COLUMN + "," + m_handler.CONTACT_ID_COLUMN + "," + m_handler.FIELD_KEY_COLUMN + ")" +
+            " VALUES ('" + entry.getValue() + "', 'TODO', '" + contactId + "', '" + entry.getKey().name()+ "')");
+
+            //m_db.insert(m_handler.CONTACTDATA_TABLE_NAME, null, values);
         }
     }
 
