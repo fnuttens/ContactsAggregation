@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity {
 
     private final static int VERSION = 1;
-    private final static String NAME = "ContactsAggregation1.db";
+    private final static String NAME = "ContactsAggregation112.db";
     public static DatabaseHandler bdd;
     private ContactListItemAdapter _contactAdapter;
 

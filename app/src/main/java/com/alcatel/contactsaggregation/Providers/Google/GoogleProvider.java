@@ -271,6 +271,15 @@ public class GoogleProvider extends Provider {
 
                         // - - - - -
 
+                        // Search for id field
+                        Object id = HelperProvider.getJSONObjectByPath(contactObject, "id.$t");
+                        if (id != null) {
+                            c.setField(StandardFields.UID, id.toString());
+                            c.setUniqueId(id.toString());
+                        }
+
+                        // - - - - -
+
                         // Search for name fields and isolate fullName value
                         Object fullName = HelperProvider.getJSONObjectByPath(contactObject, "title.$t");
 
