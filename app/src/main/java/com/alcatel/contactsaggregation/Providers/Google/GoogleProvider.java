@@ -2,6 +2,7 @@ package com.alcatel.contactsaggregation.Providers.Google;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import com.alcatel.contactsaggregation.Core.DAO.DAOContact;
 import com.alcatel.contactsaggregation.Core.DAO.DAOProvider;
@@ -40,8 +41,14 @@ public class GoogleProvider extends Provider {
     private static final String PROVIDER_NAME = "Google";
 
     private GoogleProvider() {
-        this._timeout = 0;
-        this._accessToken = "";
+
+        DAOProvider daoProvider = new DAOProvider(MainActivity.bdd);
+        daoProvider.open();
+        Pair<String, Long> credential = daoProvider.getProviderCredential(PROVIDER_NAME);
+        daoProvider.close();
+
+        this._timeout = credential.second.longValue();
+        this._accessToken = credential.first;
         this.register(this);
     }
 

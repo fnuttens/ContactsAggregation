@@ -3,6 +3,7 @@ package com.alcatel.contactsaggregation.Core.DAO;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
+import android.util.Pair;
 
 import com.alcatel.contactsaggregation.Providers.Provider;
 
@@ -17,7 +18,7 @@ public class DAOProvider extends DAOBase {
 
     public void insert(Provider newProvider) {
         m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.PROVIDER_TABLE_NAME + " VALUES('" + newProvider.getClass().getSimpleName() + "', '" +
-        newProvider.getClass().getPackage().getName() + "');");
+                newProvider.getClass().getPackage().getName() + "');");
     }
 
     public int delete(Provider provider) {
@@ -37,6 +38,21 @@ public class DAOProvider extends DAOBase {
 
     public void insertCredential(String login, Provider provider, String token, long timeout) {
         m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CREDENTIAL_TABLE_NAME + " VALUES('" + login + "', '" + provider.getClass().getName() + "', '" + token + "'," + timeout + ");");
+    }
+
+    public Pair<String, Long> getProviderCredential(String providerId) {
+
+        Cursor c = m_db.query(m_handler.CREDENTIAL_TABLE_NAME,
+                null,
+                m_handler.PROVIDER_ID_COLUMN + "='" + providerId + "'",
+                null, null, null, null);
+
+        if(!c.moveToFirst())    return new Pair<String, Long>("", new Long(0));
+
+        String token = c.getString(2);
+        Long timeout = new Long(c.getLong(3));
+
+        return new Pair<>(token, timeout);
     }
 
     public boolean exists(Provider provider) {
