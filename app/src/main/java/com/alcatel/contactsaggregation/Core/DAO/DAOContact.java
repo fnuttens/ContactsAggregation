@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Florent on 06/06/2015.
+ * Data Access Object for contacts
  */
 public class DAOContact extends DAOBase {
 
@@ -20,19 +20,12 @@ public class DAOContact extends DAOBase {
         super(dbHandler);
     }
 
-    public void insert(Contact newContact) {
-
-        // Insert new merged contact
-        //m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.MERGEDCONTACT_TABLE_NAME + " VALUES ");
-        //m_db.insert(m_handler.MERGEDCONTACT_TABLE_NAME, null, null);
+    public void insert(Contact newContact, String providerId) {
 
         // Contact insert
-        ContentValues values = new ContentValues();
-        values.put(m_handler.CONTACT_ID_COLUMN, newContact.getUniqueId());
-        values.put(m_handler.MERGEDCONTACT_ID_COLUMN, 1);
+        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACT_TABLE_NAME + " VALUES('" + newContact.getUniqueId() + "', '" + providerId + "', 1)");
 
-        //m_db.insert(m_handler.CONTACT_TABLE_NAME, null, values);
-        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACT_TABLE_NAME + "(" + m_handler.CONTACT_ID_COLUMN + "," + m_handler.MERGEDCONTACT_ID_COLUMN + ") VALUES ('" + newContact.getUniqueId() + "', 1)");
+        // Contact data insert
         this.insertContactDatas(newContact);
     }
 
@@ -45,21 +38,24 @@ public class DAOContact extends DAOBase {
         this.updateContactDatas(contact);
     }
 
-    public ArrayList<Contact> getContactsFromProvider(Provider provider) {
+    public ArrayList<Contact> getContactsFromProvider(String providerId) {
 
-        String providerId = provider.getClass().getName();
-        ArrayList<Contact> providerContacts = new ArrayList<>();
-
-        Cursor c = m_db.query(m_handler.CONTACTDATA_TABLE_NAME,
-                null,
+        Cursor c = m_db.query(m_handler.CONTACT_TABLE_NAME,
+                new String[] { m_handler.CONTACT_ID_COLUMN, m_handler.PROVIDER_ID_COLUMN },
                 m_handler.PROVIDER_ID_COLUMN + "= '" + providerId + "'",
                 null, null, null, null);
 
-        while (c.moveToNext()) {
-            //TODO: create contacts from datas
+        ArrayList<Contact> providerContacts = new ArrayList<>();
+
+        if(c == null || c.getCount() == 0)  return providerContacts;
+
+        while(c.moveToNext()) {
+
+            String nextContactId = c.getString(0);
+            HashMap<StandardFields, String> contactDatas = getContactDatasFromContactId(nextContactId);
+            providerContacts.add(new Contact(nextContactId, contactDatas));
         }
 
-        c.close();
         return providerContacts;
     }
 
@@ -71,11 +67,12 @@ public class DAOContact extends DAOBase {
 
         HashMap<StandardFields, String> contactDatas = new HashMap<>();
 
+        if(c == null || c.getCount() == 0)  return contactDatas;
+
         while (c.moveToNext()) {
             contactDatas.put(StandardFields.valueOf(c.getString(0)), c.getString(1));
         }
 
-        c.close();
         return contactDatas;
     }
 
@@ -84,17 +81,7 @@ public class DAOContact extends DAOBase {
         String contactId = contact.getUniqueId();
 
         for (Map.Entry<StandardFields, String> entry : contact.getFields().entrySet()) {
-
-            ContentValues values = new ContentValues();
-            values.put(m_handler.CONTACTDATA_VALUE_COLUMN, entry.getValue());
-            values.put(m_handler.PROVIDER_ID_COLUMN, "TODO");
-            values.put(m_handler.CONTACT_ID_COLUMN, contactId);
-            values.put(m_handler.FIELD_KEY_COLUMN, entry.getKey().name());
-
-            m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACTDATA_TABLE_NAME + " (" + m_handler.CONTACTDATA_VALUE_COLUMN + "," + m_handler.PROVIDER_ID_COLUMN + "," + m_handler.CONTACT_ID_COLUMN + "," + m_handler.FIELD_KEY_COLUMN + ")" +
-            " VALUES ('" + entry.getValue() + "', 'TODO', '" + contactId + "', '" + entry.getKey().name()+ "')");
-
-            //m_db.insert(m_handler.CONTACTDATA_TABLE_NAME, null, values);
+            m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CONTACTDATA_TABLE_NAME + " VALUES ('" + entry.getValue() + "', '" + contactId + "', '" + entry.getKey().name()+ "')");
         }
     }
 
@@ -110,11 +97,28 @@ public class DAOContact extends DAOBase {
 
             ContentValues values = new ContentValues();
             values.put(m_handler.CONTACTDATA_VALUE_COLUMN, entry.getValue());
-            values.put(m_handler.PROVIDER_ID_COLUMN, "TODO");
             values.put(m_handler.CONTACT_ID_COLUMN, contactId);
             values.put(m_handler.FIELD_KEY_COLUMN, entry.getKey().name());
 
             m_db.update(m_handler.CONTACTDATA_TABLE_NAME, values, m_handler.CONTACT_ID_COLUMN + "= '" + contactId + "'", null);
         }
+    }
+
+    private HashMap<StandardFields, String> getContactDatasFromContactId(String contactId) {
+
+        Cursor c = m_db.query(m_handler.CONTACTDATA_TABLE_NAME,
+                null,
+                m_handler.CONTACT_ID_COLUMN + "= '" + contactId + "'",
+                null, null, null, null);
+
+        HashMap<StandardFields, String> contactDatas = new HashMap<>();
+
+        if(c == null || c.getCount() == 0)  return contactDatas;
+
+        while (c.moveToNext()) {
+            contactDatas.put(StandardFields.valueOf(c.getString(0)), c.getString(1));
+        }
+
+        return contactDatas;
     }
 }

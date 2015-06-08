@@ -14,33 +14,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public final static String PROVIDER_TABLE_NAME = "Provider";
     public final static String PROVIDER_ID_COLUMN = "idPro";
     public final static String PROVIDER_PACKAGE_COLUMN = "package";
+    private final static String PROVIDER_TABLE_CREATE = "CREATE TABLE " + PROVIDER_TABLE_NAME + "(" +
+            PROVIDER_ID_COLUMN + " TEXT PRIMARY KEY," +
+            PROVIDER_PACKAGE_COLUMN + " TEXT);";
+    private final static String PROVIDER_TABLE_DROP = "DROP TABLE IF EXISTS " + PROVIDER_TABLE_NAME + ";";
+
     // TABLE Credential
     //------------------------------------------------------------------------------------------------------------------
     public final static String CREDENTIAL_TABLE_NAME = "Credential";
     public final static String CREDENTIAL_LOGIN_COLUMN = "login";
     public final static String CREDENTIAL_TOKEN_COLUMN = "token";
     public final static String CREDENTIAL_TIMEOUT_COLUMN = "timeout";
-    // TABLE Field
-    //------------------------------------------------------------------------------------------------------------------
-    public final static String FIELD_TABLE_NAME = "Field";
-    public final static String FIELD_KEY_COLUMN = "key";
-    public final static String FIELD_DESCRIPTION_COLUMN = "description";
-    // TABLE MergedContact
-    //------------------------------------------------------------------------------------------------------------------
-    public final static String MERGEDCONTACT_TABLE_NAME = "MergedContact";
-    public final static String MERGEDCONTACT_ID_COLUMN = "idMer";
-    // TABLE Contact
-    //------------------------------------------------------------------------------------------------------------------
-    public final static String CONTACT_TABLE_NAME = "Contact";
-    public final static String CONTACT_ID_COLUMN = "idCon";
-    // TABLE ContactData
-    //------------------------------------------------------------------------------------------------------------------
-    public final static String CONTACTDATA_TABLE_NAME = "ContactData";
-    public final static String CONTACTDATA_VALUE_COLUMN = "value";
-    private final static String PROVIDER_TABLE_CREATE = "CREATE TABLE " + PROVIDER_TABLE_NAME + "(" +
-            PROVIDER_ID_COLUMN + " TEXT PRIMARY KEY," +
-            PROVIDER_PACKAGE_COLUMN + " TEXT);";
-    private final static String PROVIDER_TABLE_DROP = "DROP TABLE IF EXISTS " + PROVIDER_TABLE_NAME + ";";
     private final static String CREDENTIAL_TABLE_CREATE = "CREATE TABLE " + CREDENTIAL_TABLE_NAME + "(" +
             CREDENTIAL_LOGIN_COLUMN + " TEXT PRIMARY KEY," +
             PROVIDER_ID_COLUMN + " TEXT," +
@@ -49,26 +33,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             "FOREIGN KEY(" + PROVIDER_ID_COLUMN + ") REFERENCES " +
             PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + "));";
     private final static String CREDENTIAL_TABLE_DROP = "DROP TABLE IF EXISTS " + CREDENTIAL_TABLE_NAME + ";";
+
+    // TABLE Field
+    //------------------------------------------------------------------------------------------------------------------
+    public final static String FIELD_TABLE_NAME = "Field";
+    public final static String FIELD_KEY_COLUMN = "key";
+    public final static String FIELD_DESCRIPTION_COLUMN = "description";
     private final static String FIELD_TABLE_CREATE = "CREATE TABLE " + FIELD_TABLE_NAME + "(" +
             FIELD_KEY_COLUMN + " TEXT PRIMARY KEY," +
             FIELD_DESCRIPTION_COLUMN + " TEXT);";
     private final static String FIELD_TABLE_DROP = "DROP TABLE IF EXISTS " + FIELD_TABLE_NAME + ";";
+
+    // TABLE MergedContact
+    //------------------------------------------------------------------------------------------------------------------
+    public final static String MERGEDCONTACT_TABLE_NAME = "MergedContact";
+    public final static String MERGEDCONTACT_ID_COLUMN = "idMer";
     private final static String MERGEDCONTACT_TABLE_CREATE = "CREATE TABLE " + MERGEDCONTACT_TABLE_NAME + "(" +
             MERGEDCONTACT_ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT);";
     private final static String MERGEDCONTACT_TABLE_DROP = "DROP TABLE IF EXISTS " + MERGEDCONTACT_TABLE_NAME + ";";
+
+    // TABLE Contact
+    //------------------------------------------------------------------------------------------------------------------
+    public final static String CONTACT_TABLE_NAME = "Contact";
+    public final static String CONTACT_ID_COLUMN = "idCon";
     private final static String CONTACT_TABLE_CREATE = "CREATE TABLE " + CONTACT_TABLE_NAME + "(" +
             CONTACT_ID_COLUMN + " TEXT PRIMARY KEY," +
+            PROVIDER_ID_COLUMN + " TEXT," +
             MERGEDCONTACT_ID_COLUMN + " INTEGER," +
+            "FOREIGN KEY(" + PROVIDER_ID_COLUMN + ") REFERENCES " +
+            PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + ")," +
             "FOREIGN KEY(" + MERGEDCONTACT_ID_COLUMN + ") REFERENCES " +
             MERGEDCONTACT_TABLE_NAME + "(" + MERGEDCONTACT_ID_COLUMN + "));";
     private final static String CONTACT_TABLE_DROP = "DROP TABLE IF EXISTS " + CONTACT_TABLE_NAME + ";";
+
+    // TABLE ContactData
+    //------------------------------------------------------------------------------------------------------------------
+    public final static String CONTACTDATA_TABLE_NAME = "ContactData";
+    public final static String CONTACTDATA_VALUE_COLUMN = "value";
     private final static String CONTACTDATA_TABLE_CREATE = "CREATE TABLE " + CONTACTDATA_TABLE_NAME + "(" +
             CONTACTDATA_VALUE_COLUMN + " TEXT PRIMARY KEY," +
-            PROVIDER_ID_COLUMN + " TEXT," +
             CONTACT_ID_COLUMN + " TEXT," +
             FIELD_KEY_COLUMN + " TEXT," +
-            "FOREIGN KEY(" + PROVIDER_ID_COLUMN + ") REFERENCES " +
-            PROVIDER_TABLE_NAME + "(" + PROVIDER_ID_COLUMN + ")," +
             "FOREIGN KEY(" + CONTACT_ID_COLUMN + ") REFERENCES " +
             CONTACT_TABLE_NAME + "(" + CONTACT_ID_COLUMN + ")," +
             "FOREIGN KEY(" + FIELD_KEY_COLUMN + ") REFERENCES " +

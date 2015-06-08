@@ -15,13 +15,9 @@ public class DAOProvider extends DAOBase {
         super(dbHandler);
     }
 
-    public long insert(Provider newProvider) {
-
-        ContentValues values = new ContentValues();
-        values.put(m_handler.PROVIDER_ID_COLUMN, newProvider.getClass().getSimpleName());
-        values.put(m_handler.PROVIDER_PACKAGE_COLUMN, newProvider.getClass().getPackage().getName());
-
-        return m_db.insert(m_handler.PROVIDER_TABLE_NAME, null, values);
+    public void insert(Provider newProvider) {
+        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.PROVIDER_TABLE_NAME + " VALUES('" + newProvider.getClass().getSimpleName() + "', '" +
+        newProvider.getClass().getPackage().getName() + "');");
     }
 
     public int delete(Provider provider) {
@@ -39,19 +35,8 @@ public class DAOProvider extends DAOBase {
         return m_db.update(m_handler.PROVIDER_TABLE_NAME, values, m_handler.PROVIDER_ID_COLUMN + "= '" + idPro + "'", null);
     }
 
-    //TODO: implement
-    public long insertCredential(String login, Provider provider, String token, long timeout) {
-
-        ContentValues values = new ContentValues();
-        values.put(m_handler.CREDENTIAL_LOGIN_COLUMN, login);
-        values.put(m_handler.PROVIDER_ID_COLUMN, provider.getClass().getName());
-        values.put(m_handler.CREDENTIAL_TOKEN_COLUMN, token);
-        values.put(m_handler.CREDENTIAL_TIMEOUT_COLUMN, timeout);
-
-        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CREDENTIAL_TABLE_NAME + " (" + m_handler.CREDENTIAL_LOGIN_COLUMN + "," + m_handler.PROVIDER_ID_COLUMN + "," + m_handler.CREDENTIAL_TOKEN_COLUMN + "," +
-        m_handler.CREDENTIAL_TIMEOUT_COLUMN + ") VALUES ('" + login + "', '" + provider.getClass().getName() + "', '" + token + "'," + timeout + ")");
-        //return m_db.insert(m_handler.CREDENTIAL_TABLE_NAME, null, values);
-        return 0;
+    public void insertCredential(String login, Provider provider, String token, long timeout) {
+        m_db.execSQL("INSERT OR IGNORE INTO " + m_handler.CREDENTIAL_TABLE_NAME + " VALUES('" + login + "', '" + provider.getClass().getName() + "', '" + token + "'," + timeout + ");");
     }
 
     public boolean exists(Provider provider) {

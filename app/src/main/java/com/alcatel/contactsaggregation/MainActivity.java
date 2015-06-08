@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity {
 
     private final static int VERSION = 1;
-    private final static String NAME = "ContactsAggregation.db";
+    private final static String NAME = "ContactsAggregation1.db";
     public static DatabaseHandler bdd;
     private ContactListItemAdapter _contactAdapter;
 
@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         // 2015.05 - elfaus - Updatable contact list
-        ArrayList<Contact> contactListData = new ArrayList<Contact>();
+        ArrayList<Contact> contactListData = new ArrayList<>();
         Contact c1 = new Contact();
         c1.setField(StandardFields.TITLE, "Antoine Bouchina");
         Contact c2 = new Contact();

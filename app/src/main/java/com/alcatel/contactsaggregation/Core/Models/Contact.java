@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Loïc LEUILLIOT on 06/03/2015.
+ * Represents a contact
  */
 public class Contact implements Serializable {
 
@@ -23,22 +23,18 @@ public class Contact implements Serializable {
         this.fields = fields;
     }
 
-    // TODO : implement
     public String getUniqueId() {
         return uniqueId;
     }
 
-    // TODO : implement
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 
-    // TODO : implement
     public String getField(StandardFields name) {
         return this.fields.get(name);
     }
 
-    // TODO : implement
     public HashMap<StandardFields, String> getFields() {
         return this.fields;
     }

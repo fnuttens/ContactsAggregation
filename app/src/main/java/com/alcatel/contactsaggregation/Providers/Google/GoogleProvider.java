@@ -25,17 +25,19 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Loïc LEUILLIOT on 06/03/2015.
+ * Class establishing the communication between the application and the Google API
  */
 public class GoogleProvider extends Provider {
 
     // Debug parameters
-    private static final String LOGIN_HINT = "e.elfaus@gmail.com";
+    private static final String LOGIN_HINT = "Contact.aggregation@gmail.com";
     private static GoogleProvider instance = new GoogleProvider();
-    private ArrayList<Contact> _contactList = new ArrayList<Contact>();
+    private ArrayList<Contact> _contactList = new ArrayList<>();
     // OAuth parameters
     private long _timeout; // timestamp of timeout token
     private String _accessToken; // current access token
+
+    private static final String PROVIDER_NAME = "Google";
 
     private GoogleProvider() {
         this._timeout = 0;
@@ -90,7 +92,7 @@ public class GoogleProvider extends Provider {
 
         // Stores the google contacts in the database
         for (Contact c : this._contactList) {
-            daoContact.insert(c);
+            daoContact.insert(c, PROVIDER_NAME);
         }
 
         daoContact.close();
@@ -150,7 +152,6 @@ public class GoogleProvider extends Provider {
     }
 
     @Override
-    // TODO : implement
     public Contact getContact(Contact c) {
         DAOContact daoContact = new DAOContact(MainActivity.bdd);
         daoContact.open();
@@ -162,7 +163,12 @@ public class GoogleProvider extends Provider {
 
     @Override
     public ArrayList<Contact> getContacts() {
-        return this._contactList;
+        DAOContact daoContact = new DAOContact(MainActivity.bdd);
+        daoContact.open();
+        ArrayList<Contact> googleContacts = daoContact.getContactsFromProvider(PROVIDER_NAME);
+        daoContact.close();
+
+        return googleContacts;
     }
 
     @Override
@@ -186,7 +192,7 @@ public class GoogleProvider extends Provider {
     public void addContact(Contact c) {
         DAOContact daoContact = new DAOContact(MainActivity.bdd);
         daoContact.open();
-        daoContact.insert(c);
+        daoContact.insert(c, PROVIDER_NAME);
         daoContact.close();
     }
 
@@ -306,7 +312,7 @@ public class GoogleProvider extends Provider {
                         // insert the contact to the list
                         this._contacts.add(c);
 
-                        daoContact.insert(c);
+                        daoContact.insert(c, PROVIDER_NAME);
                     }
 
                     daoContact.close();
