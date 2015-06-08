@@ -70,7 +70,7 @@ public class DAOContact extends DAOBase {
         if(c == null || c.getCount() == 0)  return contactDatas;
 
         while (c.moveToNext()) {
-            contactDatas.put(StandardFields.valueOf(c.getString(0)), c.getString(1));
+            contactDatas.put(StandardFields.valueOf(c.getString(2)), c.getString(0));
         }
 
         return contactDatas;
@@ -116,7 +116,8 @@ public class DAOContact extends DAOBase {
         if(c == null || c.getCount() == 0)  return contactDatas;
 
         while (c.moveToNext()) {
-            contactDatas.put(StandardFields.valueOf(c.getString(0)), c.getString(1));
+
+            contactDatas.put(StandardFields.valueOf(c.getString(2)), c.getString(0));
         }
 
         return contactDatas;
