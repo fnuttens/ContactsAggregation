@@ -21,6 +21,7 @@ import com.alcatel.contactsaggregation.Core.Views.SettingsActivity;
 import com.alcatel.contactsaggregation.Providers.Google.GoogleProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -117,6 +118,7 @@ public class MainActivity extends ActionBarActivity {
         // Get contacts from provider list
         ArrayList<Contact> contacts = GoogleProvider.getInstance().getContacts();
         if (contacts.size() > 0) {
+            Collections.sort(contacts);
             this._contactAdapter.clear();
             this._contactAdapter.addAll(contacts);
         }

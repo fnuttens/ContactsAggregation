@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Represents a contact
  */
-public class Contact implements Serializable {
+public class Contact implements Serializable, Comparable<Contact> {
 
     private String uniqueId;
     private HashMap<StandardFields, String> fields;
@@ -56,4 +56,11 @@ public class Contact implements Serializable {
         return result + "}";
     }
 
+    @Override
+    public int compareTo(Contact another) {
+        String thisTitle = getField(StandardFields.TITLE);
+        String anotherTitle = another.getField(StandardFields.TITLE);
+
+        return thisTitle.compareToIgnoreCase(anotherTitle);
+    }
 }
