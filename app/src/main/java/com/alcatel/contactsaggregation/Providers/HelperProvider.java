@@ -14,7 +14,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 
 /**
- * Created by Loïc LEUILLIOT on 03/04/2015.
+ *
  */
 public class HelperProvider {
 

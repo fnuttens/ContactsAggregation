@@ -17,7 +17,7 @@ import com.alcatel.contactsaggregation.R;
 import com.alcatel.contactsaggregation.StandardFields;
 
 /**
- * Created by Antoine BOUCHINA on 02/04/2015.
+ * Fragment for Contact Details
  */
 public class FragContactsDetails extends Fragment {
 
@@ -58,6 +58,7 @@ public class FragContactsDetails extends Fragment {
     public void inflate(Contact c) {
 
         String mail = c.getField(StandardFields.EMAIL);
+        String name = c.getField(StandardFields.FN);
 
         if (mail != null) {
             if (mail.contains("@gmail")) {

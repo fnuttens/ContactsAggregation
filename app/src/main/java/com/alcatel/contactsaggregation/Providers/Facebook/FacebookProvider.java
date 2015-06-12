@@ -7,7 +7,7 @@ import com.alcatel.contactsaggregation.Core.Models.Contact;
 import com.alcatel.contactsaggregation.Providers.Provider;
 
 /**
- * Created by Loïc LEUILLIOT on 06/03/2015.
+ *
  */
 public class FacebookProvider extends Provider {
 

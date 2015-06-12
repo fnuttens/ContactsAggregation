@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        // 2015.05 - elfaus - Updatable contact list
+        // Démo
         ArrayList<Contact> contactListData = new ArrayList<>();
         Contact c1 = new Contact();
         c1.setField(StandardFields.TITLE, "Antoine Bouchina");
@@ -62,7 +62,6 @@ public class MainActivity extends ActionBarActivity {
         c10.setField(StandardFields.TITLE, "Nghia Huynh");
         Contact c11 = new Contact();
         c11.setField(StandardFields.TITLE, "Thibaut Weissgerber");
-
 
         final ListView contactListView = (ListView) findViewById(R.id.listContacts);
         this._contactAdapter = new ContactListItemAdapter(this, contactListData);

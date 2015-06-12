@@ -1,7 +1,7 @@
 package com.alcatel.contactsaggregation;
 
 /**
- * Created by elfaus on 06/03/2015.
+ *
  */
 public enum StandardFields {
     FN,

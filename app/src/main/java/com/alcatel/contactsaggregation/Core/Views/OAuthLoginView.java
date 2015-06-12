@@ -1,5 +1,5 @@
 /**
- * Created by Loïc LEUILLIOT on 06/03/2015.
+ *
  */
 
 package com.alcatel.contactsaggregation.Core.Views;
@@ -56,6 +56,7 @@ public class OAuthLoginView extends ActionBarActivity {
                     } catch (InvocationTargetException e) {
                         Log.e("[OAUTH-LOGIN]", e.getMessage());
                     }
+                    onBackPressed();
                 }
 
                 return false;

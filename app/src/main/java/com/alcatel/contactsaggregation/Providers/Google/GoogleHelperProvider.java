@@ -7,7 +7,7 @@ import com.alcatel.contactsaggregation.Providers.HelperProvider;
 import com.alcatel.contactsaggregation.StandardFields;
 
 /**
- * Created by Loïc LEUILLIOT on 30/04/2015.
+ *
  */
 class GoogleHelperProvider {
 

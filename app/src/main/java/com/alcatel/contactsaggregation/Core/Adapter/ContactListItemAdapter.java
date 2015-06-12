@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import com.alcatel.contactsaggregation.Core.Models.Contact;
 import com.alcatel.contactsaggregation.Providers.Google.GoogleProvider;
@@ -31,7 +33,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
- * Created by Antoine BOUCHINA on 02/04/2015.
+ * Adapter for ContactListItem
  */
 public class ContactListItemAdapter extends ArrayAdapter<Contact> {
 

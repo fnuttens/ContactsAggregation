@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Loïc LEUILLIOT on 06/03/2015.
+ *
  */
 public abstract class Provider {
 
